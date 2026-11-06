@@ -1,0 +1,92 @@
+<h2>As outras telas</h2>
+<p class="subtitle">Inventário, Canais e Configurações no estilo C. O log fica num botão discreto no rodapé da barra lateral.</p>
+
+<style>
+  .sc { font-family: -apple-system, "Segoe UI", Inter, sans-serif; background: #f6f6f8; color: #18181b; border-radius: 14px; height: 400px; display: flex; font-size: 12px; overflow: hidden; }
+  .sc .nav { width: 48px; background: #fff; border-right: 1px solid #e5e5ea; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 16px 0; }
+  .sc .nav i { width: 24px; height: 24px; border-radius: 7px; background: #ececf1; display: block; } .sc .nav i.on { background: #18181b; } .sc .nav i.log { margin-top: auto; background: transparent; border: 1px dashed #c4c4cc; }
+  .sc .main { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+  .sc h4 { font-size: 16px; margin: 0; font-weight: 600; }
+  .sc .muted { color: #6b6b76; font-size: 11px; }
+  .sc .panel { background: #fff; border: 1px solid #e5e5ea; border-radius: 10px; padding: 10px 12px; }
+  .sc .row { display: flex; align-items: center; gap: 8px; }
+  .sc .bar { height: 3px; border-radius: 99px; background: #ececf1; margin-top: 6px; } .sc .bar b { display: block; height: 100%; border-radius: 99px; background: #18181b; }
+  .sc .drops { display: flex; gap: 6px; margin-top: 8px; }
+  .sc .d { width: 30px; height: 30px; border-radius: 7px; background: #ececf1; position: relative; } .sc .d.ok { background: #18181b; } .sc .d.run { background: conic-gradient(#9147ff 0 80%, #ececf1 80%); }
+  .sc .tab { padding: 3px 9px; border-radius: 99px; background: #ececf1; font-size: 11px; } .sc .tab.on { background: #18181b; color: #fff; }
+  .sc .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; display: inline-block; }
+  .sc .tg { width: 28px; height: 16px; border-radius: 99px; background: #18181b; margin-left: auto; position: relative; } .sc .tg::after { content: ""; position: absolute; right: 2px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff; }
+  .sc .tg.off { background: #d4d4da; } .sc .tg.off::after { right: auto; left: 2px; }
+  .sc .seg { margin-left: auto; display: flex; background: #ececf1; border-radius: 7px; padding: 2px; } .sc .seg span { padding: 2px 8px; border-radius: 5px; font-size: 10px; } .sc .seg span.on { background: #fff; }
+  .sc .drag { color: #b0b0b8; }
+</style>
+
+<div class="cards">
+  <div class="card">
+    <div class="card-image">
+      <div class="sc">
+        <div class="nav"><i></i><i class="on"></i><i></i><i></i><i class="log"></i></div>
+        <div class="main">
+          <div class="row"><h4>Inventário</h4><span style="margin-left:auto" class="tab on">Ativas</span><span class="tab">Em breve</span><span class="tab">Concluídas</span></div>
+          <div class="panel">
+            <div class="row"><b>Hunt: Showdown 1896</b><span class="muted" style="margin-left:auto">termina em 3h35</span></div>
+            <div class="muted">Week 2, Pt. 3 · 0 de 5</div>
+            <div class="drops"><div class="d run"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div></div>
+          </div>
+          <div class="panel">
+            <div class="row"><b>Marvel Rivals</b><span class="muted" style="margin-left:auto">termina em 2 dias</span></div>
+            <div class="muted">Season 5 · 1 de 3</div>
+            <div class="drops"><div class="d ok"></div><div class="d"></div><div class="d"></div></div>
+          </div>
+          <div class="panel" style="opacity:.55">
+            <div class="row"><b>Rust</b><span class="muted" style="margin-left:auto">não selecionado</span></div>
+            <div class="muted">Twitch Drops Round 42 · 0 de 8</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body"><h3>Inventário</h3><p>Uma linha por campanha, com os drops como quadradinhos (preenchido = ganho, anel = em progresso). Filtros no topo.</p></div>
+  </div>
+
+  <div class="card">
+    <div class="card-image">
+      <div class="sc">
+        <div class="nav"><i></i><i></i><i class="on"></i><i></i><i class="log"></i></div>
+        <div class="main">
+          <div class="row"><h4>Canais</h4><span class="muted" style="margin-left:auto">troca automática</span></div>
+          <div class="panel row" style="border:2px solid #18181b"><span class="dot"></span><b>huntshowdown</b><span class="muted">assistindo</span><span class="muted" style="margin-left:auto">2.431</span></div>
+          <div class="panel row"><span class="dot"></span><span>gunsmith_hunt</span><span class="muted" style="margin-left:auto">812</span></div>
+          <div class="panel row"><span class="dot"></span><span>bayou_streams</span><span class="muted" style="margin-left:auto">390</span></div>
+          <div class="panel row"><span class="dot" style="background:#c4c4cc"></span><span class="muted">crowbait_tv · offline</span></div>
+          <div class="muted" style="margin-top:auto">Clique num canal para assistir a ele no lugar do atual.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body"><h3>Canais</h3><p>Lista simples de quem está ao vivo com drops. Um clique troca de canal (substitui o botão "Switch").</p></div>
+  </div>
+
+  <div class="card">
+    <div class="card-image">
+      <div class="sc">
+        <div class="nav"><i></i><i></i><i></i><i class="on"></i><i class="log"></i></div>
+        <div class="main">
+          <h4>Configurações</h4>
+          <div class="panel">
+            <div class="row"><b>Jogos</b><span class="seg"><span class="on">Só os escolhidos</span><span>Todos</span></span></div>
+            <div class="row" style="margin-top:8px"><span class="drag">⋮⋮</span>1. Hunt: Showdown 1896</div>
+            <div class="row" style="margin-top:4px"><span class="drag">⋮⋮</span>2. Marvel Rivals</div>
+            <div class="muted" style="margin-top:6px">+ adicionar jogo</div>
+          </div>
+          <div class="panel">
+            <div class="row">Tema<span class="seg"><span class="on">Sistema</span><span>Claro</span><span>Escuro</span></span></div>
+            <div class="row" style="margin-top:8px">Iniciar com o sistema<span class="tg"></span></div>
+            <div class="row" style="margin-top:8px">Avisar quando ganhar um drop<span class="tg"></span></div>
+            <div class="row" style="margin-top:8px">Idioma<span class="muted" style="margin-left:auto">Português ▾</span></div>
+          </div>
+          <div class="panel row">Conta: igorlopes12<span class="muted" style="margin-left:auto">Sair</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body"><h3>Configurações</h3><p>Lista de jogos arrastável (mesma do passo a passo), tema, opções gerais e conta. Só o essencial à vista.</p></div>
+  </div>
+</div>

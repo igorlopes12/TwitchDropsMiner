@@ -1,0 +1,77 @@
+<h2>Direção C: claro e escuro</h2>
+<p class="subtitle">A mesma tela nos dois temas. Por padrão o app seguiria o tema do sistema, com uma opção nas Configurações para fixar claro ou escuro.</p>
+
+<style>
+  .tdm { font-family: -apple-system, "Segoe UI", Inter, sans-serif; border-radius: 14px; overflow: hidden; height: 380px; display: flex; font-size: 13px; }
+  .tdm .nav { width: 56px; display: flex; flex-direction: column; align-items: center; gap: 14px; padding-top: 18px; }
+  .tdm .nav i { width: 28px; height: 28px; border-radius: 8px; display: block; }
+  .tdm .main { flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .tdm .muted { opacity: .6; font-size: 11px; }
+  .tdm .row { display: flex; align-items: center; gap: 10px; }
+  .tdm .chip { padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+  .tdm .big { font-size: 40px; font-weight: 300; letter-spacing: -1.5px; }
+  .tdm .panel { border-radius: 12px; padding: 16px; }
+  .tdm .bar { height: 4px; border-radius: 99px; } .tdm .bar b { display: block; height: 100%; width: 80%; border-radius: 99px; }
+  .tdm .bar.s b { width: 33%; }
+
+  .light { background: #f6f6f8; color: #18181b; }
+  .light .nav { background: #fff; border-right: 1px solid #e5e5ea; }
+  .light .nav i { background: #ececf1; } .light .nav i.on { background: #18181b; }
+  .light .panel { background: #fff; border: 1px solid #e5e5ea; }
+  .light .bar { background: #ececf1; } .light .bar b { background: #18181b; } .light .bar.s b { background: #9147ff; }
+  .light .chip { background: #ecfdf3; color: #067647; }
+
+  .dark { background: #0f0f12; color: #ededf0; }
+  .dark .nav { background: #16161a; border-right: 1px solid #26262c; }
+  .dark .nav i { background: #26262c; } .dark .nav i.on { background: #ededf0; }
+  .dark .panel { background: #16161a; border: 1px solid #26262c; }
+  .dark .bar { background: #26262c; } .dark .bar b { background: #ededf0; } .dark .bar.s b { background: #a970ff; }
+  .dark .chip { background: #0b2e1c; color: #4ade80; }
+</style>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Claro</div>
+    <div class="mockup-body">
+      <div class="tdm light">
+        <div class="nav"><i class="on"></i><i></i><i></i><i></i></div>
+        <div class="main">
+          <div class="row"><b>Minerando agora</b><span class="chip" style="margin-left:auto">● Ativo</span></div>
+          <div class="panel">
+            <div class="muted">Hunt: Showdown 1896</div>
+            <div style="font-size:16px;font-weight:600;margin:2px 0 12px">Supply Crate</div>
+            <div class="row" style="align-items:baseline"><span class="big">5 min</span><span class="muted">restantes · 80%</span></div>
+            <div class="bar" style="margin-top:12px"><b></b></div>
+          </div>
+          <div class="panel">
+            <div class="row"><span>Campanha · 0 de 5 drops</span><span class="muted" style="margin-left:auto">3h35</span></div>
+            <div class="bar s" style="margin-top:8px"><b></b></div>
+          </div>
+          <div class="panel row" style="padding:10px 16px"><span>huntshowdown</span><span class="muted" style="margin-left:auto">2.431 espectadores</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header">Escuro</div>
+    <div class="mockup-body">
+      <div class="tdm dark">
+        <div class="nav"><i class="on"></i><i></i><i></i><i></i></div>
+        <div class="main">
+          <div class="row"><b>Minerando agora</b><span class="chip" style="margin-left:auto">● Ativo</span></div>
+          <div class="panel">
+            <div class="muted">Hunt: Showdown 1896</div>
+            <div style="font-size:16px;font-weight:600;margin:2px 0 12px">Supply Crate</div>
+            <div class="row" style="align-items:baseline"><span class="big">5 min</span><span class="muted">restantes · 80%</span></div>
+            <div class="bar" style="margin-top:12px"><b></b></div>
+          </div>
+          <div class="panel">
+            <div class="row"><span>Campanha · 0 de 5 drops</span><span class="muted" style="margin-left:auto">3h35</span></div>
+            <div class="bar s" style="margin-top:8px"><b></b></div>
+          </div>
+          <div class="panel row" style="padding:10px 16px"><span>huntshowdown</span><span class="muted" style="margin-left:auto">2.431 espectadores</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<h2>Primeira vez: passo a passo</h2>
+<p class="subtitle">Três passos na primeira abertura, no estilo C. Os jogos do passo 2 vêm das campanhas ativas da conta.</p>
+
+<style>
+  .ob { font-family: -apple-system, "Segoe UI", Inter, sans-serif; background: #f6f6f8; color: #18181b; border-radius: 14px; height: 400px; padding: 22px; display: flex; flex-direction: column; font-size: 13px; }
+  .ob .steps { display: flex; gap: 6px; margin-bottom: 18px; } .ob .steps i { flex: 1; height: 4px; border-radius: 99px; background: #e5e5ea; display: block; } .ob .steps i.on { background: #18181b; }
+  .ob h4 { font-size: 20px; font-weight: 600; margin: 0 0 4px; letter-spacing: -.4px; }
+  .ob .muted { color: #6b6b76; font-size: 12px; }
+  .ob .btn { margin-top: auto; align-self: flex-end; background: #18181b; color: #fff; padding: 9px 18px; border-radius: 10px; font-weight: 600; }
+  .ob .ghost { background: transparent; color: #6b6b76; padding: 9px 12px; }
+  .ob .grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 14px; }
+  .ob .g { background: #fff; border: 1px solid #e5e5ea; border-radius: 10px; padding: 8px; position: relative; }
+  .ob .g .cv { height: 54px; border-radius: 6px; margin-bottom: 6px; }
+  .ob .g.sel { border: 2px solid #18181b; padding: 7px; }
+  .ob .g .ck { position: absolute; top: 12px; right: 12px; width: 16px; height: 16px; border-radius: 50%; background: #18181b; color: #fff; font-size: 10px; display: grid; place-items: center; }
+  .ob .g b { font-size: 11px; display: block; } .ob .g span { font-size: 10px; color: #6b6b76; }
+  .ob .center { margin: auto; text-align: center; }
+</style>
+
+<div class="cards">
+  <div class="card">
+    <div class="card-image">
+      <div class="ob">
+        <div class="steps"><i class="on"></i><i></i><i></i></div>
+        <h4>Bem-vindo ao Drops Miner</h4>
+        <div class="muted">Ele assiste às lives por você e resgata os drops automaticamente.</div>
+        <div class="center">
+          <div style="width:64px;height:64px;border-radius:16px;background:#9147ff;margin:0 auto 12px"></div>
+          <div class="muted">Vamos abrir o navegador para você<br>entrar na sua conta da Twitch.</div>
+        </div>
+        <div class="btn">Entrar com a Twitch</div>
+      </div>
+    </div>
+    <div class="card-body"><h3>1 · Entrar</h3><p>Explica o que o app faz e abre o login no navegador.</p></div>
+  </div>
+
+  <div class="card">
+    <div class="card-image">
+      <div class="ob">
+        <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+        <h4>Quais jogos você quer?</h4>
+        <div class="muted">6 jogos com campanhas ativas agora. Arraste depois para mudar a ordem.</div>
+        <div class="grid">
+          <div class="g sel"><div class="cv" style="background:linear-gradient(160deg,#8a5a2b,#2b1a0d)"></div><b>Hunt: Showdown</b><span>5 drops · 3h35</span><div class="ck">✓</div></div>
+          <div class="g"><div class="cv" style="background:linear-gradient(160deg,#ff6b4a,#5a1a10)"></div><b>Rust</b><span>8 drops · 6 dias</span></div>
+          <div class="g sel"><div class="cv" style="background:linear-gradient(160deg,#3b82f6,#0b1d40)"></div><b>Marvel Rivals</b><span>3 drops · 2 dias</span><div class="ck">✓</div></div>
+          <div class="g"><div class="cv" style="background:linear-gradient(160deg,#facc15,#4a3a05)"></div><b>PUBG</b><span>4 drops · 5 dias</span></div>
+          <div class="g"><div class="cv" style="background:linear-gradient(160deg,#22c55e,#0a3018)"></div><b>Valorant</b><span>2 drops · 1 dia</span></div>
+          <div class="g"><div class="cv" style="background:linear-gradient(160deg,#a855f7,#2a0b40)"></div><b>Destiny 2</b><span>6 drops · 9 dias</span></div>
+        </div>
+        <div style="display:flex;margin-top:auto"><div class="btn ghost" style="align-self:center;margin:0">Minerar todos</div><div class="btn" style="margin-left:auto">Continuar (2)</div></div>
+      </div>
+    </div>
+    <div class="card-body"><h3>2 · Escolher jogos</h3><p>Grade com as capas dos jogos que têm drops agora. "Minerar todos" pula a escolha.</p></div>
+  </div>
+
+  <div class="card">
+    <div class="card-image">
+      <div class="ob">
+        <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+        <h4>Tudo pronto</h4>
+        <div class="muted">Pode minimizar: o app continua na bandeja do sistema.</div>
+        <div class="center">
+          <div style="font-size:40px;font-weight:300;letter-spacing:-1.5px">2 jogos</div>
+          <div class="muted">Hunt: Showdown → Marvel Rivals</div>
+        </div>
+        <div class="btn">Começar a minerar</div>
+      </div>
+    </div>
+    <div class="card-body"><h3>3 · Pronto</h3><p>Confirma a escolha e avisa que o app roda na bandeja.</p></div>
+  </div>
+</div>
