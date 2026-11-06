@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, TypedDict, TYPE_CHECKING
+from typing import Any, Literal, TypedDict, TYPE_CHECKING
 
 from yarl import URL
 
-from utils import json_load, json_save
+from utils import json_load, json_save, merge_json
 from constants import SETTINGS_PATH, DEFAULT_LANG, PriorityMode
 
 if TYPE_CHECKING:
@@ -23,6 +23,8 @@ class SettingsFile(TypedDict):
     enable_badges_emotes: bool
     available_drops_check: bool
     priority_mode: PriorityMode
+    theme: Literal["system", "light", "dark"]
+    onboarding_done: bool
 
 
 default_settings: SettingsFile = {
@@ -37,7 +39,24 @@ default_settings: SettingsFile = {
     "enable_badges_emotes": False,
     "available_drops_check": False,
     "priority_mode": PriorityMode.PRIORITY_ONLY,
+    "theme": "system",
+    "onboarding_done": False,
 }
+
+
+def migrate(raw: dict[str, Any]) -> dict[str, Any]:
+    """
+    Fills in settings introduced by the web GUI, derived from older ones.
+    Only missing keys are added; anything already present is kept.
+    """
+    if "theme" not in raw:
+        raw["theme"] = "dark" if raw.get("dark_mode") else "system"
+    if "onboarding_done" not in raw:
+        # existing users who already picked games (or don't filter by priority) skip onboarding
+        raw["onboarding_done"] = bool(raw.get("priority")) or (
+            "priority_mode" in raw and raw["priority_mode"] is not PriorityMode.PRIORITY_ONLY
+        )
+    return raw
 
 
 class Settings:
@@ -61,11 +80,15 @@ class Settings:
     enable_badges_emotes: bool
     available_drops_check: bool
     priority_mode: PriorityMode
+    theme: Literal["system", "light", "dark"]
+    onboarding_done: bool
 
     PASSTHROUGH = ("_settings", "_args", "_altered")
 
     def __init__(self, args: ParsedArgs):
-        self._settings: SettingsFile = json_load(SETTINGS_PATH, default_settings)
+        raw: dict[str, Any] = migrate(json_load(SETTINGS_PATH, {}, merge=False))
+        merge_json(raw, dict(default_settings))
+        self._settings: SettingsFile = raw  # type: ignore[assignment]
         self._args: ParsedArgs = args
         self._altered: bool = False
 
