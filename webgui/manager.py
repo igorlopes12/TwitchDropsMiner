@@ -6,6 +6,7 @@ main.py, cache.py) calls on gui.GUIManager, translating each call into a bridge 
 """
 from __future__ import annotations
 
+import sys
 import asyncio
 import logging
 from datetime import datetime
@@ -329,7 +330,10 @@ class GUIManager:
         if runtime is not None:
             self._bridge: Bridge = runtime.bridge
             self._handlers = runtime.handlers
-            runtime.on_close = self.close
+            runtime.set_close_handler(self.close)
+            if sys.platform != "darwin":
+                # minimizing sends the app to the tray (macOS has no tray)
+                runtime.on_minimize = lambda: self.tray.minimize()
         else:
             # no window (tests): events are only kept in the bridge snapshot
             self._bridge = Bridge(asyncio.get_event_loop())

@@ -8,6 +8,7 @@ each call is handed over to the asyncio loop thread, where the core lives.
 from __future__ import annotations
 
 import json
+import queue
 import asyncio
 import inspect
 import logging
@@ -41,6 +42,10 @@ class Bridge:
         self._queue: deque[tuple[str, str]] = deque()
         self._queued_logs = 0
         self._lock = threading.Lock()
+        # scripts are delivered by a dedicated thread: on most backends run_js waits until the
+        # GUI thread ran the script, and the core must never wait on the GUI
+        self._outbox: queue.Queue[str] = queue.Queue()
+        threading.Thread(target=self._send_loop, name="TDM GUI sender", daemon=True).start()
 
     def attach(self, window: Any) -> None:
         self._window = window
@@ -77,14 +82,24 @@ class Bridge:
             self._queued_logs -= 1
 
     def _send(self, script: str) -> None:
-        if self._window is None:
-            return
-        try:
-            # run_js doesn't wait for a result, so the core thread never blocks on the GUI
-            self._window.run_js(script)
-        except Exception:
-            # the window may already be gone during shutdown
-            logger.debug("Failed to deliver an event to the web GUI", exc_info=True)
+        self._outbox.put(script)
+
+    def _send_loop(self) -> None:
+        while True:
+            script = self._outbox.get()
+            try:
+                window = self._window
+                if window is not None:
+                    window.run_js(script)
+            except Exception:
+                # the window may already be gone during shutdown
+                logger.debug("Failed to deliver an event to the web GUI", exc_info=True)
+            finally:
+                self._outbox.task_done()
+
+    def wait_idle(self) -> None:
+        """Blocks until every queued script was handed to the window (used by tests)."""
+        self._outbox.join()
 
 
 class Api:

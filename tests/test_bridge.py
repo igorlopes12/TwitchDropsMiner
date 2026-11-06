@@ -2,6 +2,7 @@ import asyncio
 import json
 import re
 import threading
+import time
 
 from webgui.bridge import Api, Bridge
 
@@ -16,6 +17,7 @@ class FakeWindow:
         self.calls.append(script)
 
     def decoded(self) -> list[tuple[str, object]]:
+        self.bridge.wait_idle()
         out = []
         for script in self.calls:
             match = CALL.match(script)
@@ -28,8 +30,31 @@ def make_bridge():
     loop = asyncio.new_event_loop()
     bridge = Bridge(loop)
     window = FakeWindow()
+    window.bridge = bridge
     bridge.attach(window)
     return loop, bridge, window
+
+
+def test_emit_never_blocks_on_gui():
+    loop = asyncio.new_event_loop()
+    bridge = Bridge(loop)
+    release = threading.Event()
+    delivered = []
+
+    class StuckWindow:
+        def run_js(self, script):
+            release.wait()
+            delivered.append(script)
+
+    bridge.attach(StuckWindow())
+    bridge.mark_ready()
+    started = time.monotonic()
+    bridge.emit("status", "a")
+    bridge.emit("status", "b")
+    assert time.monotonic() - started < 0.5
+    release.set()
+    bridge.wait_idle()
+    assert len(delivered) == 2
 
 
 def test_events_before_ready_are_flushed():
