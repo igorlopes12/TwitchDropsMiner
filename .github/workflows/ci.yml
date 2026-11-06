@@ -332,7 +332,7 @@ jobs:
 
   update_releases_page:
     name: Upload builds to Releases
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
     needs:
       - windows
       - linux-pyinstaller
