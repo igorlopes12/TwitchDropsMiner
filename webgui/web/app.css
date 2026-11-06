@@ -210,3 +210,57 @@ button { font: inherit; color: inherit; }
 .ws { display: flex; flex-direction: column; gap: 4px; }
 a { color: var(--accent); text-decoration: none; font-weight: 500; }
 a:hover { text-decoration: underline; }
+
+/* settings */
+.setting { padding: 10px 0; border-top: 1px solid var(--border); }
+.panel > .setting:first-child { border-top: 0; padding-top: 0; }
+.seg { display: inline-flex; background: var(--track); border-radius: 9px; padding: 2px; }
+.seg button { border: 0; background: transparent; border-radius: 7px; padding: 4px 12px; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+.seg button.on { background: var(--panel); color: var(--text); box-shadow: var(--shadow); font-weight: 600; }
+:root[data-theme="dark"] .seg button.on { background: var(--border); }
+.switch { width: 38px; height: 22px; border-radius: 99px; border: 0; background: var(--border); position: relative; cursor: pointer; padding: 0; transition: background .15s; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left .15s; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+.switch.on { background: var(--fill); }
+.switch.on::after { left: 19px; background: var(--on-fill); }
+.switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.games { list-style: none; margin: 12px 0 8px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.games li { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 9px; background: var(--bg); cursor: grab; }
+.games li.over { outline: 2px dashed var(--accent); }
+.games .grip { color: var(--muted); letter-spacing: -2px; }
+.games .num { color: var(--muted); font-variant-numeric: tabular-nums; }
+.x { border: 0; background: transparent; color: var(--muted); font-size: 16px; line-height: 1; cursor: pointer; padding: 0 4px; }
+.x:hover { color: var(--err-text); }
+select, .text-input, .num-input {
+  font: inherit; font-size: 13px; color: var(--text); background: var(--bg);
+  border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px;
+}
+.text-input { width: 260px; user-select: text; -webkit-user-select: text; }
+.num-input { width: 70px; }
+select.add { margin-top: 4px; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.advanced summary { cursor: pointer; font-weight: 600; list-style: none; }
+.advanced summary::before { content: "› "; color: var(--muted); }
+.advanced[open] summary::before { content: "⌄ "; }
+.advanced[open] summary { margin-bottom: 8px; }
+
+/* onboarding */
+.onboarding { position: fixed; inset: 0; background: var(--bg); display: grid; place-items: center; z-index: 5; padding: 24px; }
+.ob-card { width: min(680px, 100%); min-height: 480px; background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 28px; display: flex; flex-direction: column; box-shadow: var(--shadow); }
+.ob-card h2 { font-size: 22px; font-weight: 600; letter-spacing: -.4px; margin: 0 0 4px; }
+.ob-card > p { margin: 0; }
+.steps { display: flex; gap: 6px; margin-bottom: 22px; }
+.steps i { flex: 1; height: 4px; border-radius: 99px; background: var(--track); }
+.steps i.on { background: var(--fill); }
+.ob-center { margin: auto; text-align: center; padding: 24px 0; }
+.logo { width: 64px; height: 64px; border-radius: 18px; background: var(--accent); color: #fff; display: grid; place-items: center; margin: 0 auto 14px; }
+.logo svg { width: 30px; height: 30px; }
+.ob-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: auto; padding-top: 18px; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; max-height: 300px; overflow-y: auto; padding: 2px; }
+.game { text-align: left; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 8px; cursor: pointer; min-width: 0; }
+.game:hover { border-color: var(--muted); }
+.game.sel { border: 2px solid var(--fill); padding: 7px; }
+.game .art { height: 76px; border-radius: 8px; background: var(--track); margin-bottom: 8px; position: relative; overflow: hidden; }
+.game .art img { width: 100%; height: 100%; object-fit: cover; }
+.game .badge { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 50%; background: var(--fill); color: var(--on-fill); font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+.game .strong { font-size: 13px; }
+.game .muted { font-size: 11.5px; }

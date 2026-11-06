@@ -216,6 +216,7 @@
                 "theme_system": "Sistema",
                 "theme_light": "Claro",
                 "theme_dark": "Escuro",
+                "autostart": "Iniciar com o sistema",
                 "notify": "Avisar quando ganhar um drop",
                 "language": "Idioma",
                 "language_restart": "Reinicie o app para aplicar o idioma.",

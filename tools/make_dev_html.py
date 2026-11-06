@@ -23,7 +23,7 @@ DEV = r"""<!doctype html>
   <button onclick="tdm.on('theme','dark')">dark</button>
   <button onclick="tdm.on('theme','system')">system</button>
   <button onclick="tdm.on('drop',null)">no drop</button>
-  <button onclick="tdm.on('settings',Object.assign({},tdm.state.settings,{onboarding_done:false}))">onboarding</button>
+  <button onclick="tdm.onboarding()">onboarding</button>
 </div>
 <script src="app.js"></script>
 <script>
@@ -76,6 +76,14 @@ tdm.on("auth_invalidatable", true);
 if (location.hash.startsWith("#theme=")) tdm.on("theme", location.hash.slice(7).split("&")[0]);
 const screenArg = (location.hash.match(/screen=(\w+)/) || [])[1];
 if (screenArg) tdm.navigate(screenArg);
+const obArg = (location.hash.match(/ob=(\d)/) || [])[1];
+if (obArg) {
+  if (obArg === "1") tdm.on("login", {status: "Logged out", user_id: null, waiting: true, code: null});
+  tdm.onboarding();
+  if (obArg === "3") { tdm.state.ob.step = 3; tdm.state.ob.picks = ["Hunt: Showdown 1896", "Marvel Rivals"]; }
+  if (obArg === "2") tdm.state.ob.picks = ["Hunt: Showdown 1896", "Marvel Rivals"];
+  tdm.render();
+}
 for (let i = 0; i < 30; i++) tdm.on("log", `17:2${i % 10}:0${i % 10}: INFO: example log line ${i}`);
 </script></body></html>
 """

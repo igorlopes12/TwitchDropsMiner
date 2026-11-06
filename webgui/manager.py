@@ -18,7 +18,7 @@ from translate import _
 from exceptions import ExitRequest, MinerException
 from utils import task_wrapper, webopen
 from constants import MAX_WEBSOCKETS, OUTPUT_FORMATTER, WS_TOPICS_LIMIT, PriorityMode, State
-from webgui import app
+from webgui import app, autostart
 from webgui.bridge import Bridge
 from webgui.tray import TrayIcon
 from webgui.views import campaign_view, channel_view, drop_view, game_option
@@ -37,6 +37,9 @@ MODE_NAMES: dict[PriorityMode, str] = {
     PriorityMode.LOW_AVBL_FIRST: "low",
 }
 MODES_BY_NAME: dict[str, PriorityMode] = {name: mode for mode, name in MODE_NAMES.items()}
+BOOL_SETTINGS = frozenset({
+    "tray_notifications", "autostart_tray", "enable_badges_emotes", "available_drops_check",
+})
 logger = logging.getLogger("TwitchDrops")
 
 
@@ -337,6 +340,9 @@ class GUIManager:
             "switch_channel": self._on_switch_channel,
             "refresh_inventory": self._on_refresh_inventory,
             "invalidate_auth": self._on_invalidate_auth,
+            "set_games": self._on_set_games,
+            "finish_onboarding": self._on_finish_onboarding,
+            "set_setting": self._on_set_setting,
         })
         self.status = StatusBar(self)
         self.websockets = WebsocketStatus(self)
@@ -377,7 +383,85 @@ class GUIManager:
             "language": settings.language,
             "languages": list(_.languages),
             "proxy": str(settings.proxy),
+            "autostart": self._query_autostart(),
         })
+
+    @staticmethod
+    def _query_autostart() -> bool:
+        try:
+            return autostart.query()
+        except Exception:
+            logger.debug("Failed to query autostart", exc_info=True)
+            return False
+
+    def _settings_changed(self, *, reload: bool) -> None:
+        settings = self._twitch.settings
+        settings.alter()
+        settings.save()
+        self._emit_settings()
+        self.inv.refresh()
+        if reload:
+            self._twitch.change_state(State.INVENTORY_FETCH)
+
+    def _on_set_games(self, names: list[str], mode: str, *, finish: bool = False) -> None:
+        if mode not in MODES_BY_NAME or not isinstance(names, list):
+            return
+        settings = self._twitch.settings
+        # keep the order, drop duplicates and blanks
+        settings.priority = list(dict.fromkeys(str(n) for n in names if str(n).strip()))
+        settings.priority_mode = MODES_BY_NAME[mode]
+        if finish:
+            settings.onboarding_done = True
+        self._settings_changed(reload=True)
+
+    def _on_finish_onboarding(self, names: list[str], mode: str) -> None:
+        self._on_set_games(names, mode, finish=True)
+
+    def _on_set_setting(self, key: str, value: Any) -> None:
+        settings = self._twitch.settings
+        reload = False
+        if key == "theme":
+            if value not in ("system", "light", "dark"):
+                return
+            settings.theme = value
+            self._bridge.emit("theme", value)
+        elif key in BOOL_SETTINGS:
+            setattr(settings, key, bool(value))
+            if key == "autostart_tray" and self._query_autostart():
+                # rewrite the autostart entry so it picks up the --tray flag change
+                autostart.update(True, tray=bool(value), logging_level=settings.logging_level)
+        elif key == "autostart":
+            autostart.update(
+                bool(value), tray=settings.autostart_tray, logging_level=settings.logging_level
+            )
+            self._emit_settings()
+            return
+        elif key == "connection_quality":
+            try:
+                settings.connection_quality = max(1, int(value))
+            except (TypeError, ValueError):
+                return
+        elif key == "language":
+            if value not in list(_.languages):
+                return
+            settings.language = value
+        elif key == "proxy":
+            url = URL(str(value).strip())
+            settings.proxy = url if url.host is not None and url.port is not None else URL()
+        elif key == "exclude":
+            if not isinstance(value, list):
+                return
+            settings.exclude = {str(v) for v in value if str(v).strip()}
+            reload = True
+        elif key == "mode":
+            if value not in MODES_BY_NAME:
+                return
+            settings.priority_mode = MODES_BY_NAME[value]
+            reload = True
+        else:
+            logger.debug(f"Ignoring unknown setting from the GUI: {key!r}")
+            return
+        self._settings_changed(reload=reload)
 
     # handlers called from the page (always on the asyncio loop thread)
     def _on_login_press(self) -> None:

@@ -41,7 +41,7 @@ def make_twitch(**settings):
     defaults.update(settings)
     altered = []
     twitch = NS(
-        settings=NS(**defaults, alter=lambda: altered.append(True)),
+        settings=NS(**defaults, alter=lambda: altered.append(True), save=lambda **kw: None),
         inventory=[],
         change_state=lambda state: calls.append(state),
         close=lambda: calls.append("close"),
@@ -175,3 +175,97 @@ def test_watching_survives_channel_list_refresh():
     channels = run(check)
     assert channels == [{"id": 9, "name": "RachtaZ", "status": "online", "viewers": 4495,
                          "game": None, "watching": True}]
+
+
+def run_handler(name, *args, **settings):
+    from webgui import GUIManager
+
+    async def check():
+        twitch, calls, altered = make_twitch(**settings)
+        gui = GUIManager(twitch)
+        gui._handlers[name](*args)
+        snap = dict(gui._bridge.snapshot)
+        gui.close_window()
+        return twitch.settings, calls, altered, snap
+
+    return run(check)
+
+
+def test_finish_onboarding_only():
+    settings, calls, altered, snap = run_handler(
+        "finish_onboarding", ["Hunt: Showdown 1896", "Marvel Rivals"], "only")
+    assert settings.priority == ["Hunt: Showdown 1896", "Marvel Rivals"]
+    assert settings.priority_mode is PriorityMode.PRIORITY_ONLY
+    assert settings.onboarding_done is True
+    assert State.INVENTORY_FETCH in calls
+    assert altered
+    assert snap["settings"]["onboarding_done"] is True
+
+
+def test_finish_onboarding_all():
+    settings, calls, _, _ = run_handler("finish_onboarding", [], "all")
+    assert settings.priority == []
+    assert settings.priority_mode is PriorityMode.ENDING_SOONEST
+    assert settings.onboarding_done is True
+    assert State.INVENTORY_FETCH in calls
+
+
+def test_set_games_reorders_without_finishing_onboarding():
+    settings, calls, _, snap = run_handler(
+        "set_games", ["B", "A"], "only", priority=["A", "B"])
+    assert settings.priority == ["B", "A"]
+    assert settings.onboarding_done is False
+    assert snap["settings"]["priority"] == ["B", "A"]
+    assert State.INVENTORY_FETCH in calls
+
+
+def test_set_games_ignores_unknown_mode():
+    settings, calls, _, _ = run_handler("set_games", ["A"], "bogus")
+    assert settings.priority_mode is PriorityMode.PRIORITY_ONLY
+    assert calls == []
+
+
+def test_set_theme_persists():
+    settings, _, altered, snap = run_handler("set_setting", "theme", "dark")
+    assert settings.theme == "dark"
+    assert snap["theme"] == "dark"
+    assert altered
+
+
+def test_set_invalid_theme_ignored():
+    settings, _, altered, _ = run_handler("set_setting", "theme", "purple")
+    assert settings.theme == "system"
+    assert not altered
+
+
+def test_set_mode_low_availability_reloads():
+    settings, calls, _, _ = run_handler("set_setting", "mode", "low")
+    assert settings.priority_mode is PriorityMode.LOW_AVBL_FIRST
+    assert State.INVENTORY_FETCH in calls
+
+
+def test_set_exclude_becomes_set_and_reloads():
+    settings, calls, _, snap = run_handler("set_setting", "exclude", ["Rust", "Rust"])
+    assert settings.exclude == {"Rust"}
+    assert snap["settings"]["exclude"] == ["Rust"]
+    assert State.INVENTORY_FETCH in calls
+
+
+def test_set_invalid_proxy_clears_it():
+    settings, _, _, _ = run_handler("set_setting", "proxy", "not a proxy")
+    assert settings.proxy == URL()
+
+
+def test_set_valid_proxy():
+    settings, _, _, _ = run_handler("set_setting", "proxy", "http://user:pw@127.0.0.1:8080")
+    assert settings.proxy == URL("http://user:pw@127.0.0.1:8080")
+
+
+def test_set_unknown_setting_ignored():
+    _, _, altered, _ = run_handler("set_setting", "access_token", "x")
+    assert not altered
+
+
+def test_set_boolean_setting():
+    settings, _, _, _ = run_handler("set_setting", "tray_notifications", False)
+    assert settings.tray_notifications is False

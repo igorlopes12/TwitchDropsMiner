@@ -512,6 +512,7 @@ default_translation: Translation = {
                 "theme_system": "System",
                 "theme_light": "Light",
                 "theme_dark": "Dark",
+                "autostart": "Start with the system",
                 "notify": "Notify me when a drop is earned",
                 "language": "Language",
                 "language_restart": "Restart the app to apply the language.",
