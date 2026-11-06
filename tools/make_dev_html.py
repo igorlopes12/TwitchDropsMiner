@@ -50,7 +50,8 @@ tdm.on("channels", [
   {id: 2, name: "gunsmith_hunt", status: "online", viewers: 812, game: "Hunt: Showdown 1896", watching: false},
   {id: 3, name: "bayou_streams", status: "pending", viewers: null, game: null, watching: false},
   {id: 4, name: "crowbait_tv", status: "offline", viewers: null, game: null, watching: false}]);
-const drops = (states) => states.map((s, i) => ({id: "x" + i, name: "Drop " + (i + 1), image: null,
+const HUNT = ["Supply Crate", "Random Avatar", "Legendary Hunter: Bloodline", "Weapon Charm", "Spitfire Skin"];
+const drops = (states) => states.map((s, i) => ({id: "x" + i, name: HUNT[i % HUNT.length], image: null,
   state: s, percent: s === "progress" ? 80 : (s === "claimed" ? 100 : 0)}));
 tdm.on("inventory", [
   {id: "c1", name: "Hunt 1896 (Week 2, Pt. 3)", game: "Hunt: Showdown 1896", game_image: box("1597497"),

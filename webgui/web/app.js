@@ -177,11 +177,18 @@ screens.mining = function () {
 // ---- inventory ---------------------------------------------------------
 state.inventoryFilter = "active";
 
-function dropSquare(drop) {
-  const style = drop.state === "progress"
-    ? `background:conic-gradient(var(--accent) 0 ${drop.percent}%, var(--track) ${drop.percent}% 100%)`
-    : "";
-  return el("span", { class: "sq " + drop.state, style, title: `${drop.name} · ${Math.floor(drop.percent)}%` });
+function dropTile(drop) {
+  const pct = Math.floor(drop.percent);
+  return el("div", { class: "tile " + drop.state, title: `${drop.name} · ${pct}%` },
+    el("div", { class: "thumb" },
+      drop.image
+        ? el("img", { src: drop.image, alt: "", loading: "lazy" })
+        : el("span", { class: "initial" }, (drop.name || "?").trim().charAt(0).toUpperCase()),
+      drop.state === "claimed" && el("span", { class: "check", "aria-hidden": "true" }, "✓")),
+    el("div", { class: "tile-name" }, drop.name),
+    el("div", { class: "tile-meta" },
+      drop.state === "claimed" ? "100%" : drop.state === "progress" ? `${pct}%` : "—"),
+    bar(drop.state === "claimed" ? 100 : drop.percent, drop.state === "progress" ? "accent" : ""));
 }
 
 screens.inventory = function () {
@@ -216,7 +223,7 @@ screens.inventory = function () {
           el("div", { class: "muted ellipsis" },
             `${c.name} · ${t("inventory.drops", { claimed, total: c.drops.length })}`)),
         el("span", { class: "muted end nowrap" }, c.wanted ? when : t("inventory.not_selected"))),
-      el("div", { class: "drops" }, c.drops.map(dropSquare)));
+      el("div", { class: "drops" }, c.drops.map(dropTile)));
   })];
 };
 
