@@ -19,7 +19,8 @@ def run_smoke() -> int:
 
     def probe(window) -> None:
         try:
-            result["value"] = window.evaluate_js("1+1")
+            # proves the packaged page loaded and its script ran
+            result["value"] = window.evaluate_js("typeof window.tdm.on")
         except Exception as exc:
             result["error"] = exc
         finally:
@@ -29,7 +30,9 @@ def run_smoke() -> int:
     timer = threading.Timer(15, lambda: result.setdefault("error", "timeout") and _destroy_all())
     timer.daemon = True
     try:
-        window = webview.create_window("TDM smoke", html="<p>ok</p>", width=200, height=100)
+        from webgui.app import page_url
+
+        window = webview.create_window("TDM smoke", url=page_url(), width=400, height=300)
         timer.start()
         webview.start(probe, window)
     except Exception as exc:
@@ -37,7 +40,7 @@ def run_smoke() -> int:
     finally:
         timer.cancel()
 
-    if "error" in result or result.get("value") != 2:
+    if "error" in result or result.get("value") != "function":
         _report(f"WEBVIEW_FAIL {result.get('error', result.get('value'))!r}")
         return 3
     _report(f"WEBVIEW_OK {result['value']}")

@@ -452,6 +452,19 @@ default_translation: Translation = {
             },
         },
         "web": {
+            "no_webview": (
+                "Twitch Drops Miner couldn't open its window, because no web view component "
+                "was found on this computer.\n\n{hint}"
+            ),
+            "no_webview_windows": (
+                "Install the Microsoft Edge WebView2 Runtime and try again: "
+                "https://go.microsoft.com/fwlink/p/?LinkId=2124703"
+            ),
+            "no_webview_linux": (
+                "Install WebKitGTK (on Debian/Ubuntu: sudo apt install gir1.2-webkit2-4.1) "
+                "and try again, or use the AppImage version."
+            ),
+            "no_webview_other": "Details: {error}",
             "nav": {
                 "mining": "Mining",
                 "inventory": "Inventory",

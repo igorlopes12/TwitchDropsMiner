@@ -156,6 +156,10 @@
             "getting_started_text": "1. Autentique-se no app com a sua conta da Twitch.\n2. Certifique-se que todas campanhas estão conectadas com as contas dos respectivos aplicativos.\n3. Se quiser coletar tudo, desmarque \"Apenas com Prioridade\" e clique em \"Recarregar\".\n4. Se quiser coletar apenas de certos jogos, use a lista \"Prioridade\" para configurar a lista de jogos que você quer coletar. A lista segue a ordem que é apresentada, do primeiro ao último, sendo assim, a coleta continuará para os jogos seguintes assim que o jogo anterior esteja completo.\n5. Mantenha a opção \"Priority only\" ativa, para evitar que a coleta ocorra em jogos que não estão na lista de prioridades. Ou não - você quem manda.\n6. Use a lista \"Excluir\" para jogos que NUNCA devam ser coletados.\n7. Qualquer mudança feita nas listas requer que você clique no botão \"Recarregar\" para que as mudanças tenham efeito."
         },
         "web": {
+            "no_webview": "O Twitch Drops Miner não conseguiu abrir a janela, porque não encontrou o componente de visualização web neste computador.\n\n{hint}",
+            "no_webview_windows": "Instale o Microsoft Edge WebView2 Runtime e tente de novo: https://go.microsoft.com/fwlink/p/?LinkId=2124703",
+            "no_webview_linux": "Instale o WebKitGTK (no Debian/Ubuntu: sudo apt install gir1.2-webkit2-4.1) e tente de novo, ou use a versão AppImage.",
+            "no_webview_other": "Detalhes: {error}",
             "nav": {
                 "mining": "Mineração",
                 "inventory": "Inventário",

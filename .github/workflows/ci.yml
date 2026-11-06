@@ -96,7 +96,7 @@ jobs:
           $exe = Get-ChildItem dist\*.exe | Select-Object -First 1
           Start-Process -FilePath $exe.FullName -ArgumentList '--webview-smoke' -Wait
           Get-Content webview-smoke.txt
-          if (-not (Select-String -Path webview-smoke.txt -Pattern '^WEBVIEW_OK 2' -Quiet)) { exit 1 }
+          if (-not (Select-String -Path webview-smoke.txt -Pattern '^WEBVIEW_OK function' -Quiet)) { exit 1 }
 
       - name: Create release folder
         run: |
@@ -154,7 +154,7 @@ jobs:
         run: |
           "dist/Twitch Drops Miner (by DevilXD).app/Contents/MacOS/Twitch Drops Miner (by DevilXD)" --webview-smoke || true
           cat webview-smoke.txt
-          grep -q '^WEBVIEW_OK 2' webview-smoke.txt
+          grep -q '^WEBVIEW_OK function' webview-smoke.txt
 
       - name: Create release folder and Zip
         run: |

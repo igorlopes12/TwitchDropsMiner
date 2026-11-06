@@ -7,6 +7,7 @@ on the main thread, before the core starts; `GUIManager` picks them up via `get_
 """
 from __future__ import annotations
 
+import os
 import asyncio
 import threading
 from pathlib import Path
@@ -31,6 +32,21 @@ class Runtime:
 _runtime: Runtime | None = None
 
 
+class WebViewUnavailable(RuntimeError):
+    """No usable WebView backend (Linux without WebKitGTK, Windows without WebView2...)."""
+
+
+def _import_webview():
+    # TDM_FORCE_NO_WEBVIEW lets the failure path be exercised on a machine that has a WebView
+    if os.environ.get("TDM_FORCE_NO_WEBVIEW"):
+        raise WebViewUnavailable("forced by TDM_FORCE_NO_WEBVIEW")
+    try:
+        import webview
+    except Exception as exc:
+        raise WebViewUnavailable(str(exc)) from exc
+    return webview
+
+
 def get_runtime() -> Runtime | None:
     return _runtime
 
@@ -45,7 +61,7 @@ def run(main: Callable[[], Coroutine[Any, Any, None]], *, hidden: bool = False) 
     Runs the `main` coroutine in a background thread while the GUI owns the main thread.
     Returns the exit code `main` ended with (via SystemExit), or 0.
     """
-    import webview
+    webview = _import_webview()
 
     global _runtime
     loop = asyncio.new_event_loop()
@@ -91,7 +107,13 @@ def run(main: Callable[[], Coroutine[Any, Any, None]], *, hidden: bool = False) 
             core_done.set()
             destroy_window()
 
-    webview.start(core)
+    try:
+        webview.start(core)
+    except Exception as exc:
+        if not core_done.is_set() and not loop.is_running():
+            # the GUI never came up, so the core never started
+            raise WebViewUnavailable(str(exc)) from exc
+        raise
     # the window can be gone before the core finished shutting down - let it finish
     core_done.wait(timeout=30)
     return exit_code[0]

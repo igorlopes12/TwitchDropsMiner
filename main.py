@@ -213,6 +213,26 @@ if __name__ == "__main__":
             sys.exit(3)
 
         from webgui import app as webgui_app
-        sys.exit(webgui_app.run(main, hidden=bool(settings.tray) and sys.platform != "darwin"))
+        try:
+            exit_code = webgui_app.run(main, hidden=bool(settings.tray) and sys.platform != "darwin")
+        except webgui_app.WebViewUnavailable as exc:
+            try:
+                _.set_language(settings.language)
+            except ValueError:
+                pass
+            if sys.platform == "win32":
+                hint = _("gui", "web", "no_webview_windows")
+            elif sys.platform == "linux":
+                hint = _("gui", "web", "no_webview_linux")
+            else:
+                hint = _("gui", "web", "no_webview_other").format(error=exc)
+            message = _("gui", "web", "no_webview").format(hint=hint)
+            print(message, file=sys.stderr)
+            root = tk.Tk()
+            root.withdraw()
+            messagebox.showerror("Twitch Drops Miner", message, parent=root)
+            root.destroy()
+            exit_code = 5
+        sys.exit(exit_code)
     finally:
         file.close()

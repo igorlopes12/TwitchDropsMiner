@@ -29,3 +29,11 @@ Exit codes:
 • 2: Incorrect command line arguments
 • 3: Application already running
 • 4: Loading of the settings file failed
+• 5: No web view component was found to display the application window
+
+Requirements:
+
+• Windows: Microsoft Edge WebView2 Runtime (included with Windows 10 and 11).
+• macOS: nothing extra.
+• Linux (PyInstaller build): WebKitGTK must be installed,
+	e.g. on Debian/Ubuntu: sudo apt install gir1.2-webkit2-4.1
