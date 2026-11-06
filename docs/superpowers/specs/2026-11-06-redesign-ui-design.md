@@ -59,7 +59,7 @@ Mockup: `onboarding.html`. Aparece quando não há login salvo ou a lista de jog
 O passo 2 grava na mesma lista `priority` / `priority_mode` que existe hoje.
 
 ### Padrões adotados pelo Claude (o usuário delegou: "ok, me avisa quando terminar")
-- **Compatibilidade com o upstream (DevilXD)**: o fork continua puxando atualizações do upstream. Manter `gui.py` como módulo da interface (com o mesmo `GUIManager` e a mesma superfície de chamadas usada pelo núcleo), para que merges futuros gerem poucos conflitos. Mudanças fora da interface (`twitch.py`, `main.py`, `utils.py`) ficam no mínimo indispensável.
+- **Compatibilidade com o upstream (DevilXD)**: o fork continua puxando atualizações do upstream. A interface nova vive num pacote novo (`webgui/`) com um `GUIManager` que expõe a mesma superfície de chamadas usada pelo núcleo; o `gui.py` antigo fica intocado (merges do upstream nele não conflitam) e o núcleo só troca a linha de import. Isso preserva a intenção "poucos conflitos" melhor do que reescrever o `gui.py`. Mudanças fora da interface (`twitch.py`, `main.py`, `utils.py`) ficam no mínimo indispensável.
 - **Portão do Linux**: se a janela pywebview não funcionar nos builds de Linux (PyInstaller e AppImage, x86_64 e aarch64), o trabalho **para** e volta ao usuário antes de construir as telas. Nenhuma alternativa (Tk só no Linux, ou Tk modernizado em tudo) é escolhida sem ele.
 
 ### Decisões do Claude após a revisão (o usuário pode contestar)
