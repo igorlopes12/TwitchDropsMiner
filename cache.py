@@ -15,7 +15,7 @@ from PIL.ImageTk import PhotoImage
 
 
 if TYPE_CHECKING:
-    from gui import GUIManager
+    from webgui import GUIManager
     from PIL.Image import Image
     from typing_extensions import TypeAlias
 

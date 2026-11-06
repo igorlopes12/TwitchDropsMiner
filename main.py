@@ -10,6 +10,7 @@ if __name__ == "__main__":
     import os
     import sys
     import signal
+    import threading
     import asyncio
     import logging
     import argparse
@@ -164,9 +165,13 @@ if __name__ == "__main__":
         exit_status = 0
         client = Twitch(settings)
         loop = asyncio.get_running_loop()
-        if sys.platform == "linux":
+        # signal handlers can only be installed from the main thread,
+        # which the web GUI owns - so this is skipped there
+        signals_installed = False
+        if sys.platform == "linux" and threading.current_thread() is threading.main_thread():
             loop.add_signal_handler(signal.SIGINT, lambda *_: client.gui.close())
             loop.add_signal_handler(signal.SIGTERM, lambda *_: client.gui.close())
+            signals_installed = True
         try:
             await client.run()
         except CaptchaRequired:
@@ -179,7 +184,7 @@ if __name__ == "__main__":
             client.print("Fatal error encountered:\n")
             client.print(traceback.format_exc())
         finally:
-            if sys.platform == "linux":
+            if signals_installed:
                 loop.remove_signal_handler(signal.SIGINT)
                 loop.remove_signal_handler(signal.SIGTERM)
             client.print(_("gui", "status", "exiting"))
@@ -207,6 +212,7 @@ if __name__ == "__main__":
             # already running - exit
             sys.exit(3)
 
-        asyncio.run(main())
+        from webgui import app as webgui_app
+        sys.exit(webgui_app.run(main, hidden=bool(settings.tray) and sys.platform != "darwin"))
     finally:
         file.close()
