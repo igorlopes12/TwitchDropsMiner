@@ -35,6 +35,7 @@ def make_campaign(game="Hunt: Showdown 1896", drops=None, upcoming=False, finish
         finished=finished,
         expired=expired,
         remaining_minutes=215,
+        progress=0.327,
     )
     campaign.drops = drops if drops is not None else [make_drop(campaign=campaign)] + [
         make_drop(f"Drop {i}", current=0, campaign=campaign) for i in range(4)
@@ -57,6 +58,7 @@ def test_drop_view_values():
     assert view["campaign_claimed"] == 0
     assert view["campaign_total"] == 5
     assert view["campaign_remaining_minutes"] == 215
+    assert view["campaign_percent"] == 32.7
     assert view["image"] == "https://img/Supply Crate.png"
 
 

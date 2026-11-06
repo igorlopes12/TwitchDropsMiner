@@ -36,6 +36,7 @@ def drop_view(drop: TimedDrop) -> dict[str, Any]:
         "campaign_claimed": int(campaign.claimed_drops),
         "campaign_total": int(campaign.total_drops),
         "campaign_remaining_minutes": int(campaign.remaining_minutes),
+        "campaign_percent": round(campaign.progress * 100, 1),
     }
 
 

@@ -135,3 +135,43 @@ def test_minute_almost_done_without_timer():
         return result
 
     assert run(check) is True
+
+
+def test_initial_snapshot_has_strings_theme_and_settings():
+    from webgui import GUIManager
+
+    async def check():
+        twitch, _, _ = make_twitch(priority=["Rust"], theme="dark")
+        gui = GUIManager(twitch)
+        snap = dict(gui._bridge.snapshot)
+        gui.close_window()
+        return snap
+
+    snap = run(check)
+    assert snap["strings"]["mining"]["title"]
+    assert snap["theme"] == "dark"
+    assert snap["settings"]["priority"] == ["Rust"]
+    assert snap["settings"]["mode"] == "only"
+    assert snap["settings"]["onboarding_done"] is False
+
+
+def test_watching_survives_channel_list_refresh():
+    from webgui import GUIManager
+
+    async def check():
+        twitch, _, _ = make_twitch()
+        gui = GUIManager(twitch)
+        channel = NS(id=9, name="RachtaZ", online=True, pending_online=False, viewers=4495, game=None)
+        gui.channels.display(channel, add=True)
+        gui.channels.set_watching(channel)
+        # the core clears and refills the list while it keeps watching the same channel
+        gui.channels.clear()
+        gui.channels.display(channel, add=True)
+        await asyncio.sleep(0.3)
+        channels = gui._bridge.snapshot["channels"]
+        gui.close_window()
+        return channels
+
+    channels = run(check)
+    assert channels == [{"id": 9, "name": "RachtaZ", "status": "online", "viewers": 4495,
+                         "game": None, "watching": True}]

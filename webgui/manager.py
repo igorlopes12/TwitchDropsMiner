@@ -31,6 +31,12 @@ if TYPE_CHECKING:
 
 
 _T = TypeVar("_T")
+MODE_NAMES: dict[PriorityMode, str] = {
+    PriorityMode.PRIORITY_ONLY: "only",
+    PriorityMode.ENDING_SOONEST: "all",
+    PriorityMode.LOW_AVBL_FIRST: "low",
+}
+MODES_BY_NAME: dict[str, PriorityMode] = {name: mode for mode, name in MODE_NAMES.items()}
 logger = logging.getLogger("TwitchDrops")
 
 
@@ -231,8 +237,9 @@ class ChannelList:
         self._schedule_emit()
 
     def clear(self) -> None:
+        # the watched channel survives: the core refills the list and keeps watching it
+        # without calling set_watching again; only clear_watching() resets it
         self._channels.clear()
-        self._watching = None
         self._selected = None
         self._schedule_emit()
 
@@ -340,7 +347,9 @@ class GUIManager:
         self.help = HelpTab(self)
         self.tray = TrayIcon(self)
         self._games: set[str] = set()
+        self._bridge.emit("strings", _._translation["gui"]["web"])
         self._bridge.emit("theme", twitch.settings.theme)
+        self._emit_settings()
         # logging into the GUI's log view
         self._handler = _OutputHandler(self)
         self._handler.setFormatter(OUTPUT_FORMATTER)
@@ -349,6 +358,24 @@ class GUIManager:
             self.print(f"Logging level: {logging.getLevelName(logging_level)}")
         if twitch.settings.tray:
             self.tray.minimize()
+
+    def _emit_settings(self) -> None:
+        settings = self._twitch.settings
+        self._bridge.emit("settings", {
+            "priority": list(settings.priority),
+            "exclude": sorted(settings.exclude),
+            "mode": MODE_NAMES[settings.priority_mode],
+            "theme": settings.theme,
+            "onboarding_done": settings.onboarding_done,
+            "tray_notifications": settings.tray_notifications,
+            "autostart_tray": settings.autostart_tray,
+            "enable_badges_emotes": settings.enable_badges_emotes,
+            "available_drops_check": settings.available_drops_check,
+            "connection_quality": settings.connection_quality,
+            "language": settings.language,
+            "languages": list(_.languages),
+            "proxy": str(settings.proxy),
+        })
 
     # handlers called from the page (always on the asyncio loop thread)
     def _on_login_press(self) -> None:

@@ -1,18 +1,13 @@
 <!doctype html>
-<html>
+<html lang="en" data-theme="system">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Twitch Drops Miner</title>
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
-<pre id="out"></pre>
-<script>
-  window.tdm = {
-    on(event, payload) {
-      const out = document.getElementById("out");
-      out.textContent = event + ": " + JSON.stringify(payload) + "\n" + out.textContent;
-    },
-  };
-</script>
+<div id="app"></div>
+<script src="app.js"></script>
 </body>
 </html>

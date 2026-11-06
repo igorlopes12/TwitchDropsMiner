@@ -154,6 +154,105 @@
             "how_it_works_text": "A cada 60 segundos, o app envia um event \"minute watched\" ao canal que está sendo assistido no momento - Isso é o suficiente para avançar o progresso dos drops. Note que esse modo evita a necessidade de baixar o áudio e vídeo da stream, como é feito tradicionalmente quando se utiliza um navegador web. Para manter atualizado o status do canal (ONLINE ou OFFLINE), é estabelecida uma conexão websocket, que recebe diversos eventos relacionados a stream atual, como: se ela está ligada ou desligada, ou número total de espectadores.",
             "getting_started": "Iniciando",
             "getting_started_text": "1. Autentique-se no app com a sua conta da Twitch.\n2. Certifique-se que todas campanhas estão conectadas com as contas dos respectivos aplicativos.\n3. Se quiser coletar tudo, desmarque \"Apenas com Prioridade\" e clique em \"Recarregar\".\n4. Se quiser coletar apenas de certos jogos, use a lista \"Prioridade\" para configurar a lista de jogos que você quer coletar. A lista segue a ordem que é apresentada, do primeiro ao último, sendo assim, a coleta continuará para os jogos seguintes assim que o jogo anterior esteja completo.\n5. Mantenha a opção \"Priority only\" ativa, para evitar que a coleta ocorra em jogos que não estão na lista de prioridades. Ou não - você quem manda.\n6. Use a lista \"Excluir\" para jogos que NUNCA devam ser coletados.\n7. Qualquer mudança feita nas listas requer que você clique no botão \"Recarregar\" para que as mudanças tenham efeito."
+        },
+        "web": {
+            "nav": {
+                "mining": "Mineração",
+                "inventory": "Inventário",
+                "channels": "Canais",
+                "settings": "Configurações",
+                "log": "Log e ajuda"
+            },
+            "time": {
+                "minutes": "{n} min",
+                "hours": "{h}h{m}",
+                "day": "1 dia",
+                "days": "{n} dias"
+            },
+            "mining": {
+                "title": "Minerando agora",
+                "remaining": "restantes",
+                "campaign": "Campanha · {claimed} de {total} drops",
+                "viewers": "{n} espectadores",
+                "watching": "assistindo",
+                "no_games": "Nenhum jogo escolhido",
+                "no_games_text": "Escolha os jogos que você quer e o minerador começa sozinho.",
+                "choose_games": "Escolher jogos",
+                "no_campaigns": "Nenhuma campanha ativa para os seus jogos agora",
+                "no_campaigns_text": "O minerador continua verificando e começa assim que aparecer uma.",
+                "logged_out": "Não conectado",
+                "login": "Entrar com a Twitch"
+            },
+            "inventory": {
+                "title": "Inventário",
+                "active": "Ativas",
+                "upcoming": "Em breve",
+                "finished": "Concluídas",
+                "ends_in": "termina em {time}",
+                "starts_in": "começa em {time}",
+                "ended": "encerrada",
+                "not_selected": "não selecionado",
+                "drops": "{claimed} de {total}",
+                "refresh": "Atualizar",
+                "empty": "Nada por aqui."
+            },
+            "channels": {
+                "title": "Canais",
+                "auto": "troca automática",
+                "hint": "Clique num canal para assistir a ele no lugar do atual.",
+                "offline": "offline",
+                "pending": "entrando ao vivo",
+                "empty": "Nenhum canal ainda."
+            },
+            "settings": {
+                "title": "Configurações",
+                "games": "Jogos",
+                "mode_only": "Só os escolhidos",
+                "mode_all": "Todos",
+                "add_game": "+ adicionar jogo",
+                "remove": "Remover",
+                "no_games": "Nenhum jogo na lista.",
+                "theme": "Tema",
+                "theme_system": "Sistema",
+                "theme_light": "Claro",
+                "theme_dark": "Escuro",
+                "notify": "Avisar quando ganhar um drop",
+                "language": "Idioma",
+                "language_restart": "Reinicie o app para aplicar o idioma.",
+                "account": "Conta",
+                "logout": "Sair",
+                "advanced": "Avançado",
+                "start_in_tray": "Iniciar minimizado na bandeja",
+                "proxy": "Proxy",
+                "proxy_hint": "http://usuario:senha@host:porta",
+                "connection_quality": "Qualidade da conexão",
+                "badges_emotes": "Minerar campanhas de emblemas e emotes",
+                "available_drops_check": "Assistir só canais com drops ativados",
+                "low_availability": "Menor disponibilidade primeiro",
+                "exclude": "Nunca minerar",
+                "save": "Salvar"
+            },
+            "onboarding": {
+                "welcome": "Bem-vindo ao Drops Miner",
+                "welcome_text": "Ele assiste às lives por você e resgata os drops automaticamente.",
+                "login_hint": "Vamos abrir o navegador para você entrar na sua conta da Twitch.",
+                "login_button": "Entrar com a Twitch",
+                "logging_in": "Termine o login na janela do navegador…",
+                "games": "Quais jogos você quer?",
+                "games_text": "{n} jogos com campanhas ativas agora. Dá para mudar a ordem depois.",
+                "loading": "Carregando campanhas…",
+                "mine_all": "Minerar todos",
+                "continue": "Continuar ({n})",
+                "done": "Tudo pronto",
+                "done_text": "Pode minimizar: o app continua rodando.",
+                "games_count": "{n} jogos",
+                "start": "Começar a minerar"
+            },
+            "log": {
+                "title": "Log e ajuda",
+                "websockets": "Websockets",
+                "help": "Ajuda"
+            }
         }
     }
 }
