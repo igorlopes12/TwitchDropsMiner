@@ -87,7 +87,6 @@ if sys.platform == "linux":
     hiddenimports.extend([
         "gi.repository.Gtk",
         "gi.repository.GObject",
-        "gi.repository.WebKit2",
     ])
     hooksconfig = {
         "gi": {

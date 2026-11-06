@@ -207,7 +207,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install libgirepository1.0-dev gir1.2-ayatanaappindicator3-0.1 libayatana-appindicator3-1 python3-tk gir1.2-webkit2-4.1 libwebkit2gtk-4.1-0 xvfb
+          sudo apt install libgirepository1.0-dev gir1.2-ayatanaappindicator3-0.1 libayatana-appindicator3-1 python3-tk
 
       - name: Install project dependencies
         run: |
@@ -238,12 +238,6 @@ jobs:
       - name: Show PyInstaller warnings
         run: |
           cat build/build/warn-build.txt || true
-
-      - name: WebView smoke test
-        run: |
-          LD_LIBRARY_PATH=/tmp/libXft/lib xvfb-run --auto-servernum dist/* --webview-smoke || true
-          cat webview-smoke.txt
-          grep -q '^WEBVIEW_OK 2' webview-smoke.txt
 
       - name: Create release folder
         run: |
@@ -290,7 +284,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install libgirepository1.0-dev gir1.2-ayatanaappindicator3-0.1 libayatana-appindicator3-1 xvfb
+          sudo apt install libgirepository1.0-dev gir1.2-ayatanaappindicator3-0.1 libayatana-appindicator3-1
 
       - name: Install appimage-builder
         run: |
@@ -308,13 +302,6 @@ jobs:
           PYTHON_VERSION: ${{env.PYTHON_VERSION}}
         run: |
           appimage-builder --recipe appimage/AppImageBuilder.yml
-
-      - name: WebView smoke test
-        run: |
-          chmod +x *.AppImage
-          xvfb-run --auto-servernum ./*.AppImage --appimage-extract-and-run --webview-smoke || true
-          cat webview-smoke.txt
-          grep -q '^WEBVIEW_OK 2' webview-smoke.txt
 
       - name: Create release folder
         run: |
