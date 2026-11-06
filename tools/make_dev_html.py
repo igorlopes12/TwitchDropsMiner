@@ -10,7 +10,7 @@ from translate import _  # noqa: E402
 
 lang = sys.argv[1] if len(sys.argv) > 1 else "Português"
 _.set_language(lang)
-strings = json.dumps(_._translation["gui"]["web"], ensure_ascii=False).replace("</", "<\\/")
+strings = json.dumps({**_._translation["gui"]["web"], "help": _._translation["gui"]["help"]}, ensure_ascii=False).replace("</", "<\\/")
 
 DEV = r"""<!doctype html>
 <html lang="en" data-theme="system">

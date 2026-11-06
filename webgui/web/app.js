@@ -39,7 +39,7 @@ function el(tag, attrs, ...children) {
     else if (key.startsWith("on")) node.addEventListener(key.slice(2), value);
     else node.setAttribute(key, value === true ? "" : value);
   }
-  for (const child of children.flat()) {
+  for (const child of children.flat(Infinity)) {
     if (child === undefined || child === null || child === false) continue;
     node.append(child instanceof Node ? child : document.createTextNode(String(child)));
   }
@@ -171,6 +171,115 @@ screens.mining = function () {
       el("span", { class: "muted" }, t("mining.watching")),
       el("span", { class: "muted end" },
         channel.viewers != null ? t("mining.viewers", { n: number(channel.viewers) }) : "")),
+  ];
+};
+
+// ---- inventory ---------------------------------------------------------
+state.inventoryFilter = "active";
+
+function dropSquare(drop) {
+  const style = drop.state === "progress"
+    ? `background:conic-gradient(var(--accent) 0 ${drop.percent}%, var(--track) ${drop.percent}% 100%)`
+    : "";
+  return el("span", { class: "sq " + drop.state, style, title: `${drop.name} · ${Math.floor(drop.percent)}%` });
+}
+
+screens.inventory = function () {
+  const filters = ["active", "upcoming", "finished"];
+  const head = el("div", { class: "head" },
+    el("h1", {}, t("inventory.title")),
+    el("div", { class: "end" },
+      filters.map((f) => el("button", {
+        class: "tab" + (state.inventoryFilter === f ? " on" : ""),
+        onclick: () => { state.inventoryFilter = f; render(); },
+      }, t("inventory." + f))),
+      el("button", {
+        class: "btn ghost small", title: t("inventory.refresh"), onclick: () => call("refresh_inventory"),
+      }, "↻")));
+  const campaigns = (state.inventory || [])
+    .filter((c) => c.status === state.inventoryFilter)
+    .sort((a, b) => (b.wanted - a.wanted) || a.ends_at.localeCompare(b.ends_at));
+  if (campaigns.length === 0) {
+    return [head, el("div", { class: "panel empty" }, el("p", { class: "muted" }, t("inventory.empty")))];
+  }
+  return [head, campaigns.map((c) => {
+    const claimed = c.drops.filter((d) => d.state === "claimed").length;
+    let when;
+    if (c.status === "upcoming") when = t("inventory.starts_in", { time: duration(minutesUntil(c.starts_at)) });
+    else if (c.status === "finished") when = t("inventory.ended");
+    else when = t("inventory.ends_in", { time: duration(minutesUntil(c.ends_at)) });
+    return el("div", { class: "panel campaign" + (c.wanted ? "" : " dim") },
+      el("div", { class: "row" },
+        c.game_image && el("img", { class: "cover", src: c.game_image, alt: "" }),
+        el("div", { style: "min-width:0" },
+          el("div", { class: "strong ellipsis" }, c.game),
+          el("div", { class: "muted ellipsis" },
+            `${c.name} · ${t("inventory.drops", { claimed, total: c.drops.length })}`)),
+        el("span", { class: "muted end nowrap" }, c.wanted ? when : t("inventory.not_selected"))),
+      el("div", { class: "drops" }, c.drops.map(dropSquare)));
+  })];
+};
+
+// ---- channels ------------------------------------------------------------
+const STATUS_ORDER = { online: 0, pending: 1, offline: 2 };
+
+screens.channels = function () {
+  const head = el("div", { class: "head" },
+    el("h1", {}, t("channels.title")),
+    el("div", { class: "end muted" }, t("channels.auto")));
+  const channels = [...(state.channels || [])].sort((a, b) =>
+    (STATUS_ORDER[a.status] - STATUS_ORDER[b.status]) || ((b.viewers || 0) - (a.viewers || 0)));
+  if (channels.length === 0) {
+    return [head, el("div", { class: "panel empty" }, el("p", { class: "muted" }, t("channels.empty")))];
+  }
+  return [
+    head,
+    el("div", { class: "list" }, channels.map((c) => el("button", {
+      class: "panel row channel" + (c.watching ? " watching" : ""),
+      disabled: c.status !== "online",
+      onclick: () => call("switch_channel", c.id),
+    },
+    el("span", { class: "dot" + (c.status === "online" ? "" : c.status === "pending" ? " pending" : " off") }),
+    el("span", { class: c.watching ? "strong" : "" }, c.name),
+    c.watching && el("span", { class: "muted" }, t("mining.watching")),
+    c.status !== "online" && el("span", { class: "muted" }, t("channels." + c.status)),
+    el("span", { class: "muted end" }, c.viewers != null ? number(c.viewers) : "")))),
+    el("div", { class: "muted", style: "margin-top:4px" }, t("channels.hint")),
+  ];
+};
+
+// ---- log & help ----------------------------------------------------------
+function link(href, text) {
+  return el("a", { href, target: "_blank", rel: "noopener" }, text);
+}
+
+screens.log = function () {
+  const ws = state.websockets;
+  const logBox = el("pre", { class: "log" }, state.logs.join("\n"));
+  requestAnimationFrame(() => { logBox.scrollTop = logBox.scrollHeight; });
+  return [
+    el("div", { class: "head" }, el("h1", {}, t("log.title"))),
+    ws && el("div", { class: "panel" },
+      el("div", { class: "strong", style: "margin-bottom:8px" }, t("log.websockets")),
+      el("div", { class: "ws" }, ws.items.map((w) => el("div", { class: "row" },
+        el("span", { class: "dot" + (/connect/i.test(w.status) && !/dis/i.test(w.status) ? "" : " off") }),
+        el("span", {}, `#${w.idx + 1}`),
+        el("span", { class: "muted" }, w.status),
+        el("span", { class: "muted end" }, `${w.topics}/${ws.limit}`))))),
+    el("div", { class: "panel", style: "padding:0;overflow:hidden" }, logBox),
+    el("div", { class: "panel" },
+      el("div", { class: "strong", style: "margin-bottom:6px" }, t("help.how_it_works")),
+      el("p", { class: "muted pre", style: "margin:0" }, t("help.how_it_works_text"))),
+    el("div", { class: "panel row wrap" },
+      link("https://www.twitch.tv/drops/inventory", t("help.links.inventory")),
+      link("https://www.twitch.tv/drops/campaigns", t("help.links.campaigns")),
+      link("https://github.com/igorlopes12/TwitchDropsMiner", "GitHub"),
+      el("span", { class: "muted end" }, "Twitch Drops Miner · DevilXD")),
+    el("div", { class: "panel row" },
+      el("span", {}, t("help.invalidate.text")),
+      el("button", {
+        class: "btn small end", disabled: !state.auth_invalidatable, onclick: () => call("invalidate_auth"),
+      }, t("help.invalidate.button"))),
   ];
 };
 

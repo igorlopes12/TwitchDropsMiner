@@ -347,7 +347,9 @@ class GUIManager:
         self.help = HelpTab(self)
         self.tray = TrayIcon(self)
         self._games: set[str] = set()
-        self._bridge.emit("strings", _._translation["gui"]["web"])
+        self._bridge.emit("strings", {
+            **_._translation["gui"]["web"], "help": _._translation["gui"]["help"],
+        })
         self._bridge.emit("theme", twitch.settings.theme)
         self._emit_settings()
         # logging into the GUI's log view
