@@ -140,7 +140,10 @@ class _AuthState:
             # login_data = await login_form.ask_login()
             browser: zendriver.Browser | None = None
             try:
-                browser = await zendriver.start()
+                # default is 10 x 0.25s, too short for a cold Chrome start
+                browser = await zendriver.start(
+                    browser_connection_timeout=0.5, browser_connection_max_tries=60
+                )
                 await browser.get(
                     f"https://www.twitch.tv/login?client_id={client_info.CLIENT_ID}&"
                     f"redirect_params=client_id%3D{client_info.CLIENT_ID}%26"
