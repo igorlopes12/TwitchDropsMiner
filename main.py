@@ -41,6 +41,10 @@ if __name__ == "__main__":
     if sys.version_info < (3, 10):
         raise RuntimeError("Python 3.10 or higher is required")
 
+    if "--webview-smoke" in sys.argv:
+        from webgui.smoke import run_smoke
+        sys.exit(run_smoke())
+
     # Suppress X11 Input Method registration on Linux to prevent
     # XWayland/Mutter lockups during heavy Tkinter layout updates.
     if sys.platform.startswith("linux") and "XMODIFIERS" not in os.environ:

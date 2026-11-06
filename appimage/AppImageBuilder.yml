@@ -20,7 +20,7 @@ script:
 
   # Package the app.
   - mkdir -p "$TARGET_APPDIR"/usr/{src,share/icons/hicolor/128x128/apps}
-  - cp -r "$SOURCE_DIR/../lang" "$SOURCE_DIR/../icons" "$SOURCE_DIR"/../*.py "$TARGET_APPDIR/usr/src"
+  - cp -r "$SOURCE_DIR/../lang" "$SOURCE_DIR/../icons" "$SOURCE_DIR/../webgui" "$SOURCE_DIR"/../*.py "$TARGET_APPDIR/usr/src"
   - cp "$SOURCE_DIR/pickaxe.png" "$TARGET_APPDIR/usr/share/icons/hicolor/128x128/apps/io.github.devilxd.twitchdropsminer.png"
 
   # Create a virtual environment and install up-to-date versions of meson and ninja.
@@ -57,6 +57,9 @@ AppDir:
     include:
       - gir1.2-ayatanaappindicator3-0.1
       - python3-tk
+      - gir1.2-webkit2-4.1
+      - libwebkit2gtk-4.1-0
+      - glib-networking
 
     exclude:
       - adwaita-icon-theme

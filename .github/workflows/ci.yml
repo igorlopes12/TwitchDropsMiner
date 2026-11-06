@@ -91,6 +91,13 @@ jobs:
         run: |
           pyinstaller build.spec
 
+      - name: WebView smoke test
+        run: |
+          $exe = Get-ChildItem dist\*.exe | Select-Object -First 1
+          Start-Process -FilePath $exe.FullName -ArgumentList '--webview-smoke' -Wait
+          Get-Content webview-smoke.txt
+          if (-not (Select-String -Path webview-smoke.txt -Pattern '^WEBVIEW_OK 2' -Quiet)) { exit 1 }
+
       - name: Create release folder
         run: |
           $FolderName = 'Twitch Drops Miner'
@@ -143,6 +150,12 @@ jobs:
         run: |
           pyinstaller build.spec --noconfirm
 
+      - name: WebView smoke test
+        run: |
+          "dist/Twitch Drops Miner (by DevilXD).app/Contents/MacOS/Twitch Drops Miner (by DevilXD)" --webview-smoke || true
+          cat webview-smoke.txt
+          grep -q '^WEBVIEW_OK 2' webview-smoke.txt
+
       - name: Create release folder and Zip
         run: |
           FOLDER="Twitch Drops Miner"
@@ -194,7 +207,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install libgirepository1.0-dev gir1.2-ayatanaappindicator3-0.1 libayatana-appindicator3-1 python3-tk
+          sudo apt install libgirepository1.0-dev gir1.2-ayatanaappindicator3-0.1 libayatana-appindicator3-1 python3-tk gir1.2-webkit2-4.1 libwebkit2gtk-4.1-0 xvfb
 
       - name: Install project dependencies
         run: |
@@ -225,6 +238,12 @@ jobs:
       - name: Show PyInstaller warnings
         run: |
           cat build/build/warn-build.txt || true
+
+      - name: WebView smoke test
+        run: |
+          LD_LIBRARY_PATH=/tmp/libXft/lib xvfb-run --auto-servernum dist/* --webview-smoke || true
+          cat webview-smoke.txt
+          grep -q '^WEBVIEW_OK 2' webview-smoke.txt
 
       - name: Create release folder
         run: |
@@ -271,7 +290,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install libgirepository1.0-dev gir1.2-ayatanaappindicator3-0.1 libayatana-appindicator3-1
+          sudo apt install libgirepository1.0-dev gir1.2-ayatanaappindicator3-0.1 libayatana-appindicator3-1 xvfb
 
       - name: Install appimage-builder
         run: |
@@ -289,6 +308,13 @@ jobs:
           PYTHON_VERSION: ${{env.PYTHON_VERSION}}
         run: |
           appimage-builder --recipe appimage/AppImageBuilder.yml
+
+      - name: WebView smoke test
+        run: |
+          chmod +x *.AppImage
+          xvfb-run --auto-servernum ./*.AppImage --appimage-extract-and-run --webview-smoke || true
+          cat webview-smoke.txt
+          grep -q '^WEBVIEW_OK 2' webview-smoke.txt
 
       - name: Create release folder
         run: |
